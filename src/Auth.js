@@ -5,6 +5,7 @@
 
 const properties = require('../src/Properties.js')
 const {JWK, JWT} = require('jose')
+const crypto = require('crypto')
 
 const signingOptions = {
 	issuer: "https://api.tempora.equul.us/auth",
@@ -18,8 +19,8 @@ const signingOptions = {
  module.exports = {
 
  	//{user: "matpoulos@gmail.com", role: "admin"}
- 	createJWT: async (params) => {
- 		let keyText = await properties.loadPrivateKey()
+ 	createJWT:  (params) => {
+ 		let keyText = properties.auth.privateKey
  		let k = JWK.asKey(keyText)
 
  		const payload = {...params}
@@ -32,19 +33,46 @@ const signingOptions = {
 				typ: 'JWT'
 			}
  		})
- 		return Promise.resolve(token)
+ 		return token
  	},
 
- 	validateJWT: async (token) => {
- 		let keyText = await properties.loadPublicKey()
+ 	validateJWT:  (token) => {
+ 		let keyText = properties.auth.publicKey
  		let k = JWK.asKey(keyText)
 
  		let verification = JWT.verify(token, k)
- 		console.log(verification)
  		return verification
  	},
 
- 	validateCredentials: async (username, password) => {
+ 	validateCredentials:  (username, password) => {
+ 		if(username === properties.auth.adminUsername) {
+ 			let hash = module.exports.sha512(password, properties.auth.salt)
+ 			return hash === properties.auth.adminPasswordHash
+ 		}
+ 		return false
+ 		
+ 	},
 
+ 	sha512: (password, salt) => {
+ 		let hash = crypto.createHmac('sha512', salt)
+		hash.update(password)
+		let value = hash.digest('hex')
+		return {
+			salt: salt,
+			passwordHash: value
+		}
+ 	},
+
+ 	generatePasswordHash: (password) => {
+ 		let salt = crypto.randomBytes(Math.ceil(16 / 2))
+ 			.toString('hex')
+ 			.slice(0, 16)
+
+ 		return module.exports.sha512(password, salt)
+
+ 	},
+
+ 	checkPassword: (password, storedSalt, storedHash) => {
+ 		return module.exports.sha512(password, storedSalt).passwordHash === storedHash
  	}
  }

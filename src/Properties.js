@@ -1,5 +1,5 @@
 /*
- * Used for keeping interfacing with the parameter store
+ * Used for  interfacing with the parameter store
  */
 
 const AWS = require('aws-sdk')

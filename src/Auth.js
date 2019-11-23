@@ -46,8 +46,7 @@ const signingOptions = {
 
  	validateCredentials:  (username, password) => {
  		if(username === properties.auth.adminUsername) {
- 			let hash = module.exports.sha512(password, properties.auth.salt)
- 			return hash === properties.auth.adminPasswordHash
+ 			module.exports.checkPassword(password, properties.auth.salt, properties.auth.adminPasswordHash)
  		}
  		return false
  		

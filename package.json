@@ -4,7 +4,7 @@
   "description": "Serverless backend for Tempora Pray and Tempora Web, Meditation App",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha"
   },
   "keywords": [
     "meditation"
@@ -12,6 +12,7 @@
   "author": "Alex Poulos (mapoulos)",
   "license": "ISC",
   "dependencies": {
-    "jose": "^1.13.0"
+    "jose": "^1.13.0",
+    "mocha": "^6.2.2"
   }
 }

@@ -1,13 +1,13 @@
 
 
 const AWS = require('aws-sdk')
-
+const properties = require('./src/Properties.js')
 
 //POST
 // username: adminemail@equul.us
 // password: [SECRET]
 exports.auth = async (event, context) => {
-	const properties = require('./src/Properties.js')
+	
 	// console.log("EVENT:\n" + JSON.stringify(event, null, 2))
 
 	await properties.loadSecrets()
@@ -20,9 +20,11 @@ exports.auth = async (event, context) => {
 	
 	// //check body for username, password
 	if(event['body-json']) {
+
 		var username = event['body-json'].username
 		var password = event['body-json'].password
 		if(typeof username === 'undefined' || typeof password == 'undefined') {
+			
 			return Promise.resolve(invalidReturn)
 		}
 	} else {
@@ -53,4 +55,12 @@ exports.auth = async (event, context) => {
 	})
 
 
+}
+
+exports.validate = async (event, context) => {
+	//validate the token
+
+	await properties.loadAuthorizerSecrets()
+
+	let token = event.authorizationToken
 }

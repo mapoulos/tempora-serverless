@@ -45,8 +45,9 @@ const signingOptions = {
  	},
 
  	validateCredentials:  (username, password) => {
+ 		debugger;
  		if(username === properties.auth.adminUsername) {
- 			module.exports.checkPassword(password, properties.auth.salt, properties.auth.adminPasswordHash)
+ 			return module.exports.checkPassword(password, properties.auth.salt, properties.auth.adminPasswordHash)
  		}
  		return false
  		

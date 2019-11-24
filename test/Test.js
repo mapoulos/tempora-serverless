@@ -155,3 +155,36 @@ describe('Index', () => {
 		})
 	})
 })
+
+//test auth validation
+describe('Index', () => {
+	describe('#exports.validation', () => {
+		it('validate a token', () => {
+			let request = {
+				authorizationToken: auth.createJWT({user: "matpoulos@gmail.com", role: "admin"})
+			}
+			let index = require('../index.js')
+			index.validate(request).should.eventually.have.property('principalId')
+				.that.equals('matpoulos@gmail.com')
+
+
+		})
+	})
+})
+
+//test auth validation failure
+describe('Index', () => {
+	describe('#exports.validation failure', () => {
+		it('returns an token', () => {
+			let request = {
+				authorizationToken: ""
+			}
+			let index = require('../index.js')
+			index.validate(request).should.eventually.not.have.property('principalId')
+				.that.equals('matpoulos@gmail.com')
+
+		})
+	})
+})
+
+

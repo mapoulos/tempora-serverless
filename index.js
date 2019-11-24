@@ -76,13 +76,13 @@ exports.validate = async (event, context) => {
 		}
 		
 	} catch(err) {
-		return Promise.resolve("Unauthorized")
+		return Promise.resolve(generatePolicy("InvalidToken",'Deny', event.methodArn))
 	}
 	// generate policy
 }
 
 // Help function to generate an IAM policy
-var generatePolicy = function(principalId, effect, resource, verification) {
+let generatePolicy = function(principalId, effect, resource, verification) {
     var authResponse = {};
     
     authResponse.principalId = principalId;

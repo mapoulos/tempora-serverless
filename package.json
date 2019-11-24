@@ -4,7 +4,8 @@
   "description": "Serverless backend for Tempora Pray and Tempora Web, Meditation App",
   "main": "index.js",
   "scripts": {
-    "test": "mocha"
+    "test": "mocha",
+    "test-debug": "mocha debug"
   },
   "keywords": [
     "meditation"

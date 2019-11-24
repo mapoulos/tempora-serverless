@@ -1,5 +1,5 @@
 /*
- * Used for keeping interfacing with the parameter store
+ * Used for  interfacing with the parameter store
  */
 
 const AWS = require('aws-sdk')
@@ -14,34 +14,57 @@ module.exports = {
 	auth: {
 		privateKey: "",
 		publicKey: "",
+		salt: "",
+		adminPasswordHash: "",
+		adminUsername: ""
 	},
 
 	db: {
 		tableName: ""
 	},
 
-	//true on success, error on failure
-	loadPrivateKey: async() => {
+	//the authorizer lambda only needs the public key
+	loadAuthorizerSecrets: async () => {
 		const ssm = new AWS.SSM()
-		return module.exports.auth.privateKey = ssm.getParameter({
-				Name: 'tempora-auth-private-key',
-				WithDecryption: true
-			}).promise()
-			.then((privateKeyParameter) => {
-				module.exports.auth.privateKey = privateKeyParameter.Parameter.Value
-				return Promise.resolve(module.exports.auth.privateKey)
-			})
+
+		let response  = await ssm.getParameter({
+				Name: 'tempora-auth-public-key'
+		}).promise() 
+		module.exports.auth.publicKey = response.Parameter.Value
 	},
 
-	loadPublicKey: async() => {
+
+	//the auth endpoints needs the salt, private key,
+	//admin username, and admin password
+	loadSecrets: async () => {
 		const ssm = new AWS.SSM()
-		return  ssm.getParameter({
-				Name: 'tempora-auth-public-key'
-			}).promise()
-			.then((publicKeyParameter) => {
-				module.exports.auth.publicKey = publicKeyParameter.Parameter.Value
-				return Promise.resolve(module.exports.auth.publicKey)
-			})
-	},
+
+		
+
+		let response = await ssm.getParameter({
+				Name: 'tempora-auth-private-key',
+				WithDecryption: true
+		}).promise()
+		module.exports.auth.privateKey = response.Parameter.Value
+
+
+		response = await ssm.getParameter({
+			Name: 'tempora-auth-admin-password-salt',
+			WithDecryption: true
+		}).promise()
+		module.exports.auth.salt = response.Parameter.Value
+
+		response = await ssm.getParameter({
+			Name: 'tempora-auth-admin-username',
+		}).promise()
+		module.exports.auth.adminUsername = response.Parameter.Value
+
+		response = await ssm.getParameter({
+			Name: 'tempora-auth-admin-password-hash',
+			WithDecryption: true
+		}).promise()
+		module.exports.auth.adminPasswordHash  = response.Parameter.Value
+
+	}
 
 }

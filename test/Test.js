@@ -115,3 +115,43 @@ describe('Auth', () => {
 		})
 	})
 })
+
+//test whole auth method
+describe('Index', () => {
+	describe('#exports.auth', () => {
+		it('return a 200 and JWT if valid', () => {
+			let request = {
+				"body-json" : {
+					username: properties.auth.adminUsername,
+					password: process.env['TEMPORA_PW']
+				}
+			}
+			let index = require('../index.js')
+			index.auth(request).should.eventually.have.property('statusCode')
+				.that.equals(200)
+
+			index.auth(request).should.eventually.have.property('body')
+				.that.has.property('token').that.includes("ey")
+
+		})
+	})
+})
+
+//test auth failure method
+describe('Index', () => {
+	describe('#exports.auth wrong', () => {
+		it('return a 401 when password is wrong', () => {
+			let request = {
+				"body-json" : {
+					username: properties.auth.adminUsername,
+					password: "wrong password"
+				}
+			}
+			let index = require('../index.js')
+			index.auth(request).should.eventually.have.property('statusCode')
+				.that.equals(401)
+
+
+		})
+	})
+})

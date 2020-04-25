@@ -13,10 +13,13 @@
   "author": "Alex Poulos (mapoulos)",
   "license": "ISC",
   "dependencies": {
+    "amazon-cognito-identity-js": "^3.2.0",
     "aws-sdk": "^2.578.0",
     "chai": "^4.2.0",
     "chai-as-promised": "^7.1.1",
     "jose": "^1.13.0",
-    "mocha": "^6.2.2"
+    "minimist": "^1.2.5",
+    "mocha": "^6.2.2",
+    "node-fetch": "^2.6.0"
   }
 }

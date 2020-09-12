@@ -20,6 +20,6 @@
     "jose": "^1.13.0",
     "minimist": "^1.2.5",
     "mocha": "^6.2.2",
-    "node-fetch": "^2.6.0"
+    "node-fetch": "^2.6.1"
   }
 }
